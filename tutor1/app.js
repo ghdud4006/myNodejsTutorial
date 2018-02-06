@@ -95,7 +95,7 @@ app.get('/form_get', function(req, res){ //get일경우에만 쿼리스트링으
     */
 });
 
-app.get('/form_get_receiver', function(req, res){
+app.get('/form_receiver', function(req, res){
     var title = req.query.title;
     var description = req.query.description;
     res.send(title+','+description);
@@ -106,7 +106,7 @@ app.post('/form_post', function(req, res){
     res.render('form_post');
 });
 
-app.post('form_post_receiver', function(req, res){
+app.post('/form_receiver', function(req, res){
     
 });
 
