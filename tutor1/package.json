@@ -1,0 +1,15 @@
+{
+  "name": "tutor1",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "jade": "^1.11.0"
+  }
+}
