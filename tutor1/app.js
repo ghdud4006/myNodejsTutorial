@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser'); //POST 의 body를 따올 수 있는 module
-
+// body parser 는 미들웨어 
 var app = express();
 
 
