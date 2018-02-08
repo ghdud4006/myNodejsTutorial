@@ -35,6 +35,7 @@ app.post('/topic', function(req, res){
         }
         ///redirection 사용자를 해당 url로 보내버림
         res.redirect('/topic/'+title); 
+        //res.redirect('/topic');
     }); 
 });
 
