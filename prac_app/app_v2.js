@@ -1,91 +1,160 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var fs = require('fs');
 var mysql = require('mysql');
-////////////////// connect mysql //////////////////////////////////
-var connection = mysql.createConnection({
-      host     : 'localhost',
-      user     : 'young',
-      password : 'ehd4qkd',
-      database : 'testdb'
+var conn = mysql.createConnection({ //mysql객체의 createConnection메소드를 호출하며 정보전송
+      host     : 'localhost', //mysql서버가 어디있는가, database server주소 
+      user     : 'root', // 접속할때 사용할 유저
+      password : 'ehd4qkd', // pw 
+      database : 'o2' //사용할 DB
 });
-
-connection.connect();
-////////////////////// use express module //////////////////////////////
+conn.connect();
 var app = express();
-
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.locals.pretty=true;
 
-app.set('views', './views');
+app.set('views', './views_mysql'); //template dir 경로 설정
 app.set('view engine', 'jade');
 
-app.get('/dbtest', function(req, res){
-    var sql = 'SELECT * FROM topics';
-    connection.query(sql, function(err, rows, fields){
-        if(err){
-            console.log(err);
-        }
-        else{
-            console.log('rows', rows);
-            res.send(rows);
+/////////////////////////////////////////////////////////////////////////////////
+///////////////////// home /////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+app.get(['/topic', '/topic/:id'], function(req, res){ //배열을 통해 다수의 url을 라우팅 
+    var sql = 'SELECT id,title FROM topic';
+    conn.query(sql, function(err, topics, fields){
+        var id = req.params.id;   //res.send(results);
+        if(id){
+            var sql = 'SELECT * FROM topic WHERE id=?';
+            conn.query(sql, [id], function(err, topic, fields){
+            	if(err){
+            		res.status(500).send('Internal Server Error');
+            		console.log(err);
+            	} else {
+            		res.render('view', {topics:topics, topic:topic[0]}); // [0]을 하는 이유는 id에 해당하는 topic이 배열형태로 리턴되기 때문에 그걸 걷어준다. !!
+            	}
+
+            });
+        } else {
+            res.render('view', {topics:topics});
         }
     });
 });
 
-app.get('/topic/new', function(req, res){
-    fs.readdir("data", function(err, files){
-        if(err){
+/////////////////////////////////////////////////////////////////////////////////
+///////////////////// add /////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+app.get('/topic/add', function(req, res){
+	var sql = 'SELECT id,title FROM topic';
+    conn.query(sql, function(err, topics, fields){
+    	if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error!');
+            res.status(500).send('Internal Server Error');
+        } else {
+        	res.render('add', {topics:topics});
         }
-        res.render('new',{topics:files});
-    }); 
+    });
 });
 
-app.post('/topic', function(req, res){
+app.post('/topic/add', function(req, res){
     var title = req.body.title;
     var description = req.body.description;
-
-    fs.writeFile('data/'+title, description, function(err){
-        if(err){
-            //만약 err num이 500(내부오류)이면 res.send실행
-            // eg. 만약 'dataaa/'이런식이면 에러창 res send됌
+    var author = req.body.author;
+    var sql = 'INSERT INTO topic (title, description, author) VALUES(?,?,?)';
+    conn.query(sql, [title, description, author], function(err, results, fields){
+    	if(err){
+    		console.log(err);
             res.status(500).send('Internal Server Error');
+        } else {
+        	res.redirect('/topic/'+results.insertId);
         }
-        ///redirection 사용자를 해당 url로 보내버림
-        res.redirect('/topic/'+title); 
-        //res.redirect('/topic');
-    }); 
+    });
 });
 
-app.get(['/topic', '/topic/:id'], function(req, res){ //배열을 통해 다수의 url을 라우팅 
-    var id = req.params.id;
-    fs.readdir('data',function(err, files){ 
-        //////////////////// @readdir callback /////////////////////////
-        if(err){
-            res.status(500).send('Internal Server Error');
-        }
-
+/////////////////////////////////////////////////////////////////////////////////
+///////////////////// edit /////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+app.get('/topic/:id/edit', function(req, res){ //배열을 통해 다수의 url을 라우팅 
+    var sql = 'SELECT id,title FROM topic';
+    conn.query(sql, function(err, topics, fields){
+        var id = req.params.id;   //res.send(results);
         if(id){
-        	fs.readFile('data/'+id, 'utf8', function(err, data){ 
-                ////////////////// @@readFile callback///////////////////////////////////// 
-        		if(err){
-        		    res.status(500).send('Internal Server Error');
-        		}
-				res.render('view', {topics:files, title:id, description:data});
-    		}); /////////////////  @@readFile end/////////////////////////////////////////// 
-        }else{
-        	res.render('view', {topics:files, title:'Welcome', description:'NodeJS'});
+            var sql = 'SELECT * FROM topic WHERE id=?';
+            conn.query(sql, [id], function(err, topic, fields){
+            	if(err){
+            		res.status(500).send('Internal Server Error');
+            		console.log(err);
+            	} else {
+            		res.render('edit', {topics:topics, topic:topic[0]}); // [0]을 하는 이유는 id에 해당하는 topic이 배열형태로 리턴되기 때문에 그걸 걷어준다. !!
+            	}
+
+            });
+        } else {
+            res.status(500).send('Internal Server Error');
+            console.log('There is no id.');
         }
-    });/////////////////// @readdir end ////////////////////////////////
+    });
 });
 
+app.post('/topic/:id/edit', function(req, res){ //배열을 통해 다수의 url을 라우팅
+	var title = req.body.title; 
+	var description = req.body.description; 
+	var author = req.body.author; 
+	var id = req.params.id;
+    var sql = 'UPDATE topic SET title=?, description=?, author=? WHERE id=?';
 
+    conn.query(sql, [title,description,author,id], function(err, results, fields){
+    	if(err){
+            res.status(500).send('Internal Server Error');
+            console.log(err);
+        } else {
+       		res.redirect('/topic/'+id);
+        }
+    });
+});
+/////////////////////////////////////////////////////////////////////////////////
+///////////////////// delete /////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+app.get('/topic/:id/delete', function(req, res){ //배열을 통해 다수의 url을 라우팅 
+	var id = req.params.id;
+
+	var sql = 'SELECT id,title FROM topic';
+    conn.query(sql, function(err, topics, fields){
+    	if(err){
+            res.status(500).send('Internal Server Error');
+            console.log(err);
+        } else {
+        	var sql = 'SELECT * FROM topic WHERE id=?';
+        	conn.query(sql, [id], function(err, topic, fields){
+        		if(err){
+            		res.status(500).send('Internal Server Error');
+            		console.log(err);
+        		} else {
+        			if(topic.length === 0){
+        				res.status(500).send('Internal Server Error');
+            			console.log('There is no id');
+        			} else {
+        				res.render('delete',{topics:topics, topic:topic[0]});
+        			}
+        		}
+        	});
+        }
+    });
+});
+
+app.post('/topic/:id/delete', function(req, res){ //배열을 통해 다수의 url을 라우팅 
+	var id = req.params.id;
+
+	var sql = 'DELETE FROM topic WHERE id=?';
+	conn.query(sql, [id], function(err, results){
+		res.redirect('/topic');
+	});
+	
+});
+
+/////////////////////////////////////////////////////////////////////////////////
+///////////////////// listen /////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 app.listen(3000, function(){
     console.log('Connected, 3000 PORT!');
 });
-
-connection.end();

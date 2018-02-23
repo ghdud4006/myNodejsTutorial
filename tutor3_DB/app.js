@@ -8,17 +8,18 @@ var conn = mysql.createConnection({ //mysql객체의 createConnection메소드�
 /////실제로는 별도의 파일을 빼서 오픈소스등을 사용할 시 기밀정보에 유의해야 한다. 
 
 conn.connect(); //연결
-/*
-var sql = 'SELECT * FROM topic';
-conn.query(sql, function(err, rows, fields){ // conn에 연결된 mysql db에 쿼리를 날림, 처리후 콜백함수 파라미터로 값 넘겨받음 
+
+var sql = 'SELECT * FROM topic WHERE id=?';
+var id = 3;
+conn.query(sql,[id], function(err, rows, fields){ // conn에 연결된 mysql db에 쿼리를 날림, 처리후 콜백함수 파라미터로 값 넘겨받음 
     if(err){
         console.log(err); //err 정보
     } else {
-        console.log('rows',rows); //행정보
-        console.log('fields',fields); //열 상세정보
+        console.log('rows',rows[0]); //행정보
+        //console.log('fields',fields); //열 상세정보
     }
 });
-*/
+
 
 //var sql = 'SELECT * FROM topic';
 //conn.query(sql, function(err, rows, fields){
@@ -58,15 +59,15 @@ conn.query(sql, function(err, results, egoing){
 
 //var sql='UPDATE topic SET title=?, description=? WHERE id=?';
 //var params = ['test','young', '7'];
-var sql = 'DELETE FROM topic WHERE id=?';
-var params = [6];
-conn.query(sql, params, function(err, results, egoing){ //두번째 인자값으로 params를 넘겨주면 내부적으로 치환시켜 처리 (보안으로도 굿)!!!!!
-    if(err){
-        console.log(err);
-    } else {
-        console.log(results);
-    }
-});
+//var sql = 'DELETE FROM topic WHERE id=?';
+//var params = [6];
+//conn.query(sql, params, function(err, results, egoing){ //두번째 인자값으로 params를 넘겨주면 내부적으로 치환시켜 처리 (보안으로도 굿)!!!!!
+    //if(err){
+        //console.log(err);
+    //} else {
+        //console.log(results);
+    //}
+//});
 
 
 
