@@ -1,0 +1,23 @@
+{
+  "name": "tutor3_db",
+  "version": "1.0.0",
+  "description": "testdb",
+  "main": "index.js",
+  "scripts": {
+    "test": "nop"
+  },
+  "repository": {
+    "type": "git",
+    "url": "nop"
+  },
+  "keywords": [
+    "nop"
+  ],
+  "author": "young",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mysql": "^2.15.0",
+    "node-mysql": "^0.4.2"
+  }
+}

@@ -29,18 +29,21 @@ app.get('/', function(req, res){
             </body>
         </html>
         `
+    console.log('PORT '+PORT+' receives : GET \'/\' ');
     res.send(output);        
 });
 
 app.get('/topic', function(req, res){
+    console.log('PORT '+PORT+' receives : GET \'/topic\' ');
     res.render('topic');
 });
 
 app.get('/topic/new', function(req, res){
+    console.log('PORT '+PORT+' receives : GET \'/topic/new\' ');
     res.render('new');
 });
 
-app.post('/new', function(req, res){ 
+app.post('/topic/new', function(req, res){ 
     var title = req.body.title;
     var description = req.body.description;
 
@@ -48,6 +51,7 @@ app.post('/new', function(req, res){
         if(err){
         res.status(500).send('Server Internal Error');
         }
+        console.log('PORT'+PORT+' receives : POST \'/topic/new\' ');
         res.redirect('/topic/index'); 
     });
 });
@@ -57,6 +61,8 @@ app.get('/topic/index', function(req, res){
         if(err){
             res.status(500).send('Server Internal Error');
         }
+        console.log('PORT '+PORT+' receives : GET \'/topic/index\' ');
+        
         res.render('index', {topics:files});
     });
 });
@@ -67,6 +73,7 @@ app.get('/topic/index/:name', function(req, res){
         if(err){
             res.status(500).send('Server Internal Error');
         }
+        console.log('PORT '+PORT+' receives : GET \'/topic/index/'+name+'\' ');
         res.render('data',{title:name, description:data});
    });  
 });
