@@ -13,6 +13,7 @@
     "express": "^4.16.2",
     "jade": "^1.11.0",
     "mysql": "^2.15.0",
-    "node-mysql": "^0.4.2"
+    "node-mysql": "^0.4.2",
+    "orientjs": "^2.2.8"
   }
 }

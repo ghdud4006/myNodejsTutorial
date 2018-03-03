@@ -1,0 +1,21 @@
+{
+  "name": "tutor4_orient",
+  "version": "1.0.0",
+  "description": "tutor",
+  "main": "index.js",
+  "scripts": {
+    "test": "nop"
+  },
+  "repository": {
+    "type": "git",
+    "url": "nop"
+  },
+  "keywords": [
+    "nop"
+  ],
+  "author": "young",
+  "license": "ISC",
+  "dependencies": {
+    "orientjs": "^2.2.8"
+  }
+}
