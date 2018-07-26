@@ -46,6 +46,7 @@ conn.query(sql, function(err, results, egoing){
 });
 */
 
+
 //배열을 이용해 sql문을 바꾸지 않고 치환자에 따라 그 순서에 배열로 값을 넣음 
 //var sql='INSERT INTO topic (title, description, author) VALUES(?, ?, ?)';
 //var params = ['Supervisor','Watcher', 'young'];

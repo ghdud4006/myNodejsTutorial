@@ -1,0 +1,24 @@
+{
+  "name": "prac_orient",
+  "version": "1.0.0",
+  "description": "prac",
+  "main": "index.js",
+  "scripts": {
+    "test": "nop"
+  },
+  "repository": {
+    "type": "git",
+    "url": "nop"
+  },
+  "keywords": [
+    "nop"
+  ],
+  "author": "young",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "jade": "^1.11.0",
+    "orientjs": "^2.2.9"
+  }
+}

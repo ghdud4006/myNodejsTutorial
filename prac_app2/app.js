@@ -16,7 +16,6 @@ var conn = mysql.createConnection({
 conn.connect();
 
 //// APP SETTING
-var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.locals.pretty=true;
 app.set('views', './views');
